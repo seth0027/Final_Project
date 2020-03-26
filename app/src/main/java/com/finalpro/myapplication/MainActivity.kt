@@ -36,13 +36,17 @@ val db= DateShow().SQL(this).writableDatabase
             val hdurl=c.getString(3)
             val url=c.getString(4)
             val title=c.getString(5)
-            list.add(Item(id,date,explanation,hdurl,url,title))
+            val picurl=c.getString(6)
+            list.add(Item(id,date,explanation,hdurl,url,title,picurl))
 
 
         }
+        Toast.makeText(this,"Total ${list.size} elements in List ",Toast.LENGTH_LONG).show()
          val my=Li()
-        my.notifyDataSetChanged()
+
             li.adapter=my
+
+        my.notifyDataSetChanged()
 
 
 
@@ -60,11 +64,12 @@ val db= DateShow().SQL(this).writableDatabase
 
             val date=vi.findViewById<TextView>(R.id.date)
             val tit=vi.findViewById<TextView>(R.id.tit)
-            val img:ImageView=vi.findViewById<ImageView>(R.id.img)
+            val imag:ImageView=vi.findViewById<ImageView>(R.id.imag)
 
             date.text=list[position].date
             tit.text=list[position].title
-            Picasso.get().load(list[position].hdurl).into(img)
+            val ur=list[position].picurl
+            Picasso.get().load(ur).into(imag)
 
             return vi
 
@@ -119,5 +124,5 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
 
     }
 }
-data class Item(val id:Long,val date:String,val explanation :String,val hdurl:String,val url:String,val title:String)
+data class Item(val id:Long,val date:String,val explanation :String,val hdurl:String,val url:String,val title:String,val picurl:String)
 

@@ -45,24 +45,7 @@ class DateShow : AppCompatActivity() {
 
             val db=SQL(this).writableDatabase
 
-//            list.forEach{
-//                if(it.date==date.text.toString()){
-//                    Toast.makeText(this,"Already exist",Toast.LENGTH_LONG).show()
-//                }
-//                else{
-//                    val cv=ContentValues()
-//                    cv.put("da",date.text.toString())
-//                    cv.put("explanation",explanation.text.toString())
-//                    cv.put("hdurl",hdurl.text.toString())
-//                    cv.put("url",url)
-//                    cv.put("title",tit.text.toString())
-//                    db.insert("Lit",null,cv)
 //
-//                    Toast.makeText(this,"Added to List",Toast.LENGTH_LONG).show()
-//
-//
-//                }
-//            }
             val c=db.rawQuery("Select * from Lit where da=?", arrayOf(date.text.toString()))
 
             if(c.count>0){
@@ -75,9 +58,11 @@ class DateShow : AppCompatActivity() {
                     cv.put("hdurl",hdurl.text.toString())
                     cv.put("url",url)
                     cv.put("title",tit.text.toString())
+                cv.put("picurl",url1.text.toString())
                     db.insert("Lit",null,cv)
+                   startActivity(Intent(this,MainActivity::class.java))
 
-                    Toast.makeText(this,"Added to List",Toast.LENGTH_LONG).show()
+
 
             }
 
@@ -101,19 +86,10 @@ class DateShow : AppCompatActivity() {
         i.data = Uri.parse(url)
         startActivity(i)
     }
-//    inner class SQ(ctx:Context) : SQLiteOpenHelper(ctx,"NASA",null,1){
-//        override fun onCreate(db: SQLiteDatabase?) {
-//        db.execSQL("CREATE TABLE List(_id Integer PRIMARY KEY AUTOINCREMENT, url text, hdurl text,)")
-//        }
-//
-//        override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-//
-//        }
-//
-//    }
-    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Nasa",null,1) {
+
+    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Nasa",null,2) {
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("Create table Lit(_id INTEGER PRIMARY KEY AUTOINCREMENT, da text, explanation text, hdurl text, url text,title text) ")
+        db?.execSQL("Create table Lit(_id INTEGER PRIMARY KEY AUTOINCREMENT, da text, explanation text, hdurl text, url text,title text,picurl text) ")
 
     }
 
@@ -122,7 +98,11 @@ class DateShow : AppCompatActivity() {
         onCreate(db)
     }
 
-}
+        override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+            db?.execSQL("DROP TABLE IF EXISTS Lit")
+            onCreate(db)
+        }
+    }
 
 
     inner class Tas : AsyncTask<String, Int, String>() {
@@ -165,10 +145,10 @@ class DateShow : AppCompatActivity() {
 
             date.text = jObj.getString("date")
             explanation.text = jObj.getString("explanation")
-//            url.text = jObj.getString("url")
+        url1.text = jObj.getString("url")
             hdurl.text = jObj.getString("hdurl")
             tit.text = jObj.getString("title")
-            Picasso.get().load(jObj.getString("hdurl")).into(img)
+            Picasso.get().load(jObj.getString("url")).into(img)
 
             img.visibility = View.VISIBLE
 
