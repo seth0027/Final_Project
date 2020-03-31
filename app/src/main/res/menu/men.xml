@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/about"
+        android:title="about"
+        android:icon="@drawable/ic_chat_black_24dp"
+        app:showAsAction="always"
+        android:orderInCategory="150"/>
+
+   <item
+       android:id="@+id/action_search"
+       app:actionViewClass="androidx.appcompat.widget.SearchView"
+       android:icon="@android:drawable/ic_search_category_default"
+       app:showAsAction="always|collapseActionView"
+       android:title="search"
+       android:orderInCategory="100"/>
+
+
+    <item
+        android:id="@+id/clearall"
+
+
+        app:showAsAction="never"
+        android:title="Clear all"
+        />
+
+
+    <item
+        android:id="@+id/showall"
+
+
+        app:showAsAction="never"
+        android:title="Show all"
+       />
+
+        
+
+
+</menu>

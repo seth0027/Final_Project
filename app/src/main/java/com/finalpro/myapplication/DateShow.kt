@@ -87,7 +87,7 @@ class DateShow : AppCompatActivity() {
         startActivity(i)
     }
 
-    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Nasa",null,2) {
+    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Nasa",null,1) {
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("Create table Lit(_id INTEGER PRIMARY KEY AUTOINCREMENT, da text, explanation text, hdurl text, url text,title text,picurl text) ")
 
