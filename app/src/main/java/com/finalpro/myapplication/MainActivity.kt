@@ -12,17 +12,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.ActionBarDrawerToggle
 
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     //    private val main =MainActivity()
+    private lateinit var toggle: ActionBarDrawerToggle
     private val my = Li()
 //    private val db = DateShow().SQL(this).writableDatabase
 
@@ -30,10 +34,53 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+
+        toggle = ActionBarDrawerToggle(this, drawer, R.string.app_name, R.string.app_name)
+        drawer.addDrawerListener(toggle)
+
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+
+        nav.setNavigationItemSelectedListener {
+
+            when (it.itemId) {
+                R.id.about -> {
+                    AlertDialog.Builder(this).setNeutralButton("Know More") { _, _ ->
+                        val url = "https://github.com/seth0027"
+                        val i = Intent(Intent.ACTION_VIEW)
+                        i.data = Uri.parse(url)
+                        startActivity(i)
+                    }.setPositiveButton("Okay") { _, _ -> }.setMessage("Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date•\tThe user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. ").setTitle("About").create().show()
+                }
+                R.id.showall ->{
+                    quer("Select * from Lit")
+                }
+                R.id.clearall ->{
+                    list.clear()
+                    my.notifyDataSetChanged()
+                    Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
+                }
+                R.id.action_search ->{
+                    Snackbar.make(li ,"Type your date search at top ",Snackbar.LENGTH_SHORT).show()
+                }
+
+
+            }
+            drawer.closeDrawer(GravityCompat.START)
+            true
+        }
+
+
+
+
         li.adapter = my
 
         quer("Select * from Lit")
-        Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
+
 
 
 
@@ -114,10 +161,13 @@ class MainActivity : AppCompatActivity() {
 
         }
         my.notifyDataSetChanged()
+        Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(toggle.onOptionsItemSelected(item))
+            return true
 
         when (item.itemId) {
             R.id.about -> {
@@ -134,6 +184,7 @@ class MainActivity : AppCompatActivity() {
             R.id.clearall ->{
                list.clear()
                 my.notifyDataSetChanged()
+                Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
             }
         }
         return true
