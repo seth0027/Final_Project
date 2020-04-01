@@ -19,21 +19,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     //    private val main =MainActivity()
     private lateinit var toggle: ActionBarDrawerToggle
     private val my = Li()
+    private lateinit var frag: Fragment
 //    private val db = DateShow().SQL(this).writableDatabase
 
     val list = ArrayList<Item>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val error = intent.getStringExtra("error")
+
+
+
+
 
 
 
@@ -56,16 +65,16 @@ class MainActivity : AppCompatActivity() {
                         startActivity(i)
                     }.setPositiveButton("Okay") { _, _ -> }.setMessage("Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date•\tThe user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. ").setTitle("About").create().show()
                 }
-                R.id.showall ->{
+                R.id.showall -> {
                     quer("Select * from Lit")
                 }
-                R.id.clearall ->{
+                R.id.clearall -> {
                     list.clear()
                     my.notifyDataSetChanged()
                     Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
                 }
-                R.id.action_search ->{
-                    Snackbar.make(li ,"Type your date search at top ",Snackbar.LENGTH_SHORT).show()
+                R.id.action_search -> {
+                    Snackbar.make(li, "Type your date search at top ", Snackbar.LENGTH_SHORT).show()
                 }
 
 
@@ -89,10 +98,38 @@ class MainActivity : AppCompatActivity() {
 
 
         li.setOnItemClickListener { _, _, position, _ ->
-            val url = list[position].url
-            val i = Intent(this, DateShow::class.java)
-            i.putExtra("url", url)
-            startActivity(i)
+
+            val land = frame != null
+
+
+            var b = Bundle()
+            val item = list[position]
+            b.putLong("id", item.id)
+            b.putString("date", item.date)
+            b.putString("explanation", item.explanation)
+            b.putString("hdurl", item.hdurl)
+            b.putString("picurl", item.picurl)
+            b.putString("url", item.url)
+            b.putString("title", item.title)
+
+            if (land) {
+
+                frag = InfoFragment()
+                frag.arguments = b
+                val fm = supportFragmentManager
+                        .beginTransaction().replace(R.id.frame, frag).commit()
+
+
+            } else {
+                val i = Intent(this, ShowActivity::class.java)
+                i.putExtra("bundle", b)
+                startActivity(i)
+            }
+
+//            val url = list[position].url
+//            val i = Intent(this, DateShow::class.java)
+//            i.putExtra("url", url)
+//            startActivity(i)
 
         }
 
@@ -126,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                 list.clear()
 
 //                    "Select * from Lit Where da=$query Or explanation=$query Or hdurl=$query Or url=$query Or title=$query Or picurl=$query"
-                    quer("Select * from Lit where da='$query'")
+                quer("Select * from Lit where da='$query'")
 
 
                 return true
@@ -166,7 +203,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item))
+        if (toggle.onOptionsItemSelected(item))
             return true
 
         when (item.itemId) {
@@ -178,11 +215,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(i)
                 }.setPositiveButton("Okay") { _, _ -> }.setMessage("Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date•\tThe user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. ").setTitle("About").create().show()
             }
-            R.id.showall ->{
+            R.id.showall -> {
                 quer("Select * from Lit")
             }
-            R.id.clearall ->{
-               list.clear()
+            R.id.clearall -> {
+                list.clear()
                 my.notifyDataSetChanged()
                 Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
             }
@@ -204,7 +241,8 @@ class MainActivity : AppCompatActivity() {
             date.text = list[position].date
             tit.text = list[position].title
             val ur = list[position].picurl
-            Picasso.get().load(ur).into(imag)
+            Picasso.get().load(ur).resize(960, 720).into(imag)
+
 
             return vi
 
@@ -226,37 +264,47 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     fun showDatePickerDialog(v: View) {
         val newFragment = DatePickerFragment()
         newFragment.show(supportFragmentManager, "datePicker")
     }
-
 }
 
 
-class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+    class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Use the current date as the default date in the picker
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // Use the current date as the default date in the picker
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
 
-        // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(activity as Activity, this, year, month, day)
+            // Create a new instance of DatePickerDialog and return it
+            return DatePickerDialog(activity as Activity, this, year, month, day)
+        }
+
+        override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+            // Do something with the date chosen by the user
+            val mo = month
+            val date: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val sdf = SimpleDateFormat("dd/MM/yyyy")
+            val strDate = sdf.parse("$day/$month/$year")
+            if (strDate.after(Date())) {
+                AlertDialog.Builder(activity).setPositiveButton("Ok"){_,_->}.setTitle("Error").setMessage("Date must be between 1995-6-16 and $date").create().show()
+            } else {
+                val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$year-$mo-$day"
+                val i = Intent(activity, DateShow::class.java)
+                i.putExtra("url", url)
+                startActivity(i)
+            }
+        }
+
+
     }
 
-    override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        // Do something with the date chosen by the user
-        val mo = month + 1
-        val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$year-$mo-$day"
-        val i = Intent(activity, DateShow::class.java)
-        i.putExtra("url", url)
-        startActivity(i)
 
-    }
-}
 
 data class Item(val id: Long, val date: String, val explanation: String, val hdurl: String, val url: String, val title: String, val picurl: String)
 
