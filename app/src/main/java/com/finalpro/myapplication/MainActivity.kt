@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val error = intent.getStringExtra("error")
+
 
 
 
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             val land = frame != null
 
 
-            var b = Bundle()
+            val b = Bundle()
             val item = list[position]
             b.putLong("id", item.id)
             b.putString("date", item.date)
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
                 frag = InfoFragment()
                 frag.arguments = b
-                val fm = supportFragmentManager
+                 supportFragmentManager
                         .beginTransaction().replace(R.id.frame, frag).commit()
 
 
@@ -236,7 +236,7 @@ class MainActivity : AppCompatActivity() {
 
             val date = vi.findViewById<TextView>(R.id.date)
             val tit = vi.findViewById<TextView>(R.id.tit)
-            val imag: ImageView = vi.findViewById<ImageView>(R.id.imag)
+            val imag= vi.findViewById<ImageView>(R.id.imag)
 
             date.text = list[position].date
             tit.text = list[position].title
@@ -288,17 +288,14 @@ class MainActivity : AppCompatActivity() {
         override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
             // Do something with the date chosen by the user
             val mo = month
-            val date: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            val sdf = SimpleDateFormat("dd/MM/yyyy")
-            val strDate = sdf.parse("$day/$month/$year")
-            if (strDate.after(Date())) {
-                AlertDialog.Builder(activity).setPositiveButton("Ok"){_,_->}.setTitle("Error").setMessage("Date must be between 1995-6-16 and $date").create().show()
-            } else {
+
+
+
                 val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$year-$mo-$day"
                 val i = Intent(activity, DateShow::class.java)
                 i.putExtra("url", url)
                 startActivity(i)
-            }
+
         }
 
 
