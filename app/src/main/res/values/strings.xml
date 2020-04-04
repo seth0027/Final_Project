@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Final Project</string>
+    <string name="save">Save</string>
+    <string name="select">Select Date</string>
+    <string name="search">search for date</string>
+    <string name="clear">Clear all</string>
+    <string name="show">Show all</string>
+    <string name="about">"Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date.The user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. "</string>
+    <string name="aboutH">About</string>
+    <string name="searchType">Type your search on search bar</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

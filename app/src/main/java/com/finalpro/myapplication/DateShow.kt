@@ -174,6 +174,7 @@ class DateShow : AppCompatActivity() {
             Picasso.get().load(jObj.getString("url")).resize(960, 720).into(img)
 
             img.visibility = View.VISIBLE
+            save.visibility=View.VISIBLE
             url1.visibility = View.INVISIBLE
 
 

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                         val i = Intent(Intent.ACTION_VIEW)
                         i.data = Uri.parse(url)
                         startActivity(i)
-                    }.setPositiveButton("Okay") { _, _ -> }.setMessage("Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date•\tThe user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. ").setTitle("About").create().show()
+                    }.setPositiveButton("Okay") { _, _ -> }.setMessage(R.string.about).setTitle(R.string.aboutH).create().show()
                 }
                 R.id.showall -> {
                     quer("Select * from Lit")
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Total ${list.size} elements in List ", Toast.LENGTH_LONG).show()
                 }
                 R.id.action_search -> {
-                    Snackbar.make(li, "Type your date search at top ", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(li, R.string.searchType, Snackbar.LENGTH_SHORT).show()
                 }
 
 
@@ -136,12 +138,30 @@ class MainActivity : AppCompatActivity() {
         li.setOnItemLongClickListener { _, _, position, _ ->
             AlertDialog.Builder(this).setPositiveButton("Delete") { _, _ ->
                 val da = list[position].id.toString()
+                val itemSelected=list[position]
 
                 val db = DateShow().SQL(this).writableDatabase
                 db.delete("Lit", "_id=$da", null)
                 list.removeAt(position)
 
                 my.notifyDataSetChanged()
+
+                Snackbar.make(button,"Total ${list.size} elements in List ",Snackbar.LENGTH_LONG).setAction("Undo"){
+                    val cv = ContentValues()
+                    cv.put("da", itemSelected.date)
+                    cv.put("explanation", itemSelected.explanation)
+                    cv.put("hdurl", itemSelected.hdurl)
+                    cv.put("url", itemSelected.url)
+                    cv.put("title", itemSelected.title)
+                    cv.put("picurl", itemSelected.picurl)
+                    db.insert("Lit", null, cv)
+                    list.add(position,itemSelected)
+                    my.notifyDataSetChanged()
+                    Toast.makeText(this,"Total ${list.size} elements in List",Toast.LENGTH_SHORT).show()
+
+                }.show()
+
+
 
             }.setTitle(list[position].title).setMessage(list[position].explanation).setNegativeButton("Cancel") { _, _ -> }.create().show()
 
@@ -240,6 +260,7 @@ class MainActivity : AppCompatActivity() {
 
             date.text = list[position].date
             tit.text = list[position].title
+
             val ur = list[position].picurl
             Picasso.get().load(ur).resize(960, 720).into(imag)
 
@@ -287,17 +308,64 @@ class MainActivity : AppCompatActivity() {
 
         override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
             // Do something with the date chosen by the user
-            val mo = month
+            val mo = month + 1
+
+            val yea = year.toString()
+            lateinit var da: String
+            if (day < 10) {
+                da = String.format("%02d", day)
+            } else {
+                da = day.toString()
+            }
+            lateinit var mon: String
+            if (mo < 10) {
+                mon = String.format("%02d", mo)
+            } else {
+                mon = mo.toString()
+            }
+            val date = "$yea-$mon-$da"
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
+            val date2 = sdf.parse(date)
+            val da3 = sdf.format(Date())
+            val date3 = sdf.parse(da3)
+            if (date2 > date3) {
+                Toast.makeText(activity, "Select today's or previous date", Toast.LENGTH_LONG).show()
+            } else {
 
 
+                val db = DateShow().SQL(activity as Context).writableDatabase
+                val c = db.rawQuery("Select * from Lit where da=?", arrayOf(date))
+                if (c.count > 0) {
+                    c.moveToNext()
+                    val id = c.getLong(0)
+                    val date = c.getString(1)
+                    val explanation = c.getString(2)
+                    val hdurl = c.getString(3)
+                    val url = c.getString(4)
+                    val title = c.getString(5)
+                    val picurl = c.getString(6)
+                    val b = Bundle()
 
-                val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$year-$mo-$day"
-                val i = Intent(activity, DateShow::class.java)
-                i.putExtra("url", url)
-                startActivity(i)
+                    b.putLong("id", id)
+                    b.putString("date", date)
+                    b.putString("explanation", explanation)
+                    b.putString("hdurl", hdurl)
+                    b.putString("picurl", picurl)
+                    b.putString("url", url)
+                    b.putString("title", title)
+                    val i = Intent(activity, ShowActivity::class.java)
+                    i.putExtra("bundle", b)
+                    startActivity(i)
 
+
+                } else {
+                    val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$date"
+                    val i = Intent(activity, DateShow::class.java)
+                    i.putExtra("url", url)
+                    startActivity(i)
+                }
+            }
         }
-
 
     }
 

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
 
 
@@ -28,6 +29,14 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="040952712"
+
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/topic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="NASA Image of the Day"
 
         android:gravity="center"/>
 </LinearLayout>

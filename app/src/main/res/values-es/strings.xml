@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Proyecto final</string>
+    <string name="save">Salvar</string>
+    <string name="select">Seleccione Fecha</string>
+    <string name="search">buscar fecha</string>
+    <string name="clear">Limpiar todo</string>
+    <string name="show">Mostrar todo</string>
+    <string name="about">"Permite al usuario ingresar una fecha para recuperar una imagen de los servidores web de la NASA. Un objeto selector de fechas que le permite elegir una fecha determinada. El usuario puede guardar varias fechas e imágenes en el dispositivo para verlas más tarde. El usuario también puede eliminar imágenes que se han guardado en el dispositivo "</string>
+    <string name="aboutH">
+Acerca de</string>
+    <string name="searchType">
+Escribe tu búsqueda en la barra de búsqueda</string>
+</resources>
