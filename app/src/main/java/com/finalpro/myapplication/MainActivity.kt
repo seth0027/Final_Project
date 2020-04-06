@@ -13,6 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 
@@ -39,6 +41,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        val name=intent.getStringExtra("username")
+        user.text="Welcome $name"
+
 
 
 
@@ -69,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.showall -> {
                     quer("Select * from Lit")
+
                 }
                 R.id.clearall -> {
                     list.clear()
@@ -90,7 +98,8 @@ class MainActivity : AppCompatActivity() {
 
         li.adapter = my
 
-        quer("Select * from Lit")
+
+        quer("Select * from Lit where username='$name'")
 
 
 
@@ -100,6 +109,7 @@ class MainActivity : AppCompatActivity() {
 
 
         li.setOnItemClickListener { _, _, position, _ ->
+
 
             val land = frame != null
 
@@ -113,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             b.putString("picurl", item.picurl)
             b.putString("url", item.url)
             b.putString("title", item.title)
+            b.putString("username",intent.getStringExtra("username"))
 
             if (land) {
 
@@ -136,12 +147,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         li.setOnItemLongClickListener { _, _, position, _ ->
+
             AlertDialog.Builder(this).setPositiveButton("Delete") { _, _ ->
                 val da = list[position].id.toString()
                 val itemSelected=list[position]
 
                 val db = DateShow().SQL(this).writableDatabase
-                db.delete("Lit", "_id=$da", null)
+                val name=intent.getStringExtra("username")
+                db.delete("Lit", "_id=$da and username=$name", null)
                 list.removeAt(position)
 
                 my.notifyDataSetChanged()
@@ -154,6 +167,7 @@ class MainActivity : AppCompatActivity() {
                     cv.put("url", itemSelected.url)
                     cv.put("title", itemSelected.title)
                     cv.put("picurl", itemSelected.picurl)
+                    cv.put("username",intent.getStringExtra("username"))
                     db.insert("Lit", null, cv)
                     list.add(position,itemSelected)
                     my.notifyDataSetChanged()
@@ -181,9 +195,9 @@ class MainActivity : AppCompatActivity() {
         sView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 list.clear()
-
+                val name=intent.getStringExtra("username")
 //                    "Select * from Lit Where da=$query Or explanation=$query Or hdurl=$query Or url=$query Or title=$query Or picurl=$query"
-                quer("Select * from Lit where da='$query'")
+                quer("Select * from Lit where da='$query' and username=$name")
 
 
                 return true
@@ -233,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse(url)
                     startActivity(i)
-                }.setPositiveButton("Okay") { _, _ -> }.setMessage("Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date•\tThe user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. ").setTitle("About").create().show()
+                }.setPositiveButton("Okay") { _, _ -> }.setMessage(R.string.about).setTitle(R.string.aboutH).create().show()
             }
             R.id.showall -> {
                 quer("Select * from Lit")
@@ -287,6 +301,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun showDatePickerDialog(v: View) {
+
         val newFragment = DatePickerFragment()
         newFragment.show(supportFragmentManager, "datePicker")
     }
@@ -344,6 +359,7 @@ class MainActivity : AppCompatActivity() {
                     val url = c.getString(4)
                     val title = c.getString(5)
                     val picurl = c.getString(6)
+                    val username=activity?.intent?.getStringExtra("username")
                     val b = Bundle()
 
                     b.putLong("id", id)
@@ -353,6 +369,7 @@ class MainActivity : AppCompatActivity() {
                     b.putString("picurl", picurl)
                     b.putString("url", url)
                     b.putString("title", title)
+                    b.putString("username",username)
                     val i = Intent(activity, ShowActivity::class.java)
                     i.putExtra("bundle", b)
                     startActivity(i)
@@ -361,6 +378,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     val url = "https://api.nasa.gov/planetary/apod?api_key=DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d&date=$date"
                     val i = Intent(activity, DateShow::class.java)
+                    i.putExtra("username",activity?.intent?.getStringExtra("username"))
                     i.putExtra("url", url)
                     startActivity(i)
                 }

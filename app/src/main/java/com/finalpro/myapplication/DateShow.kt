@@ -59,8 +59,10 @@ class DateShow : AppCompatActivity() {
 
         val db = SQL(this).writableDatabase
 
+        val username=intent.getStringExtra("username")
+
 //
-        val c = db.rawQuery("Select * from Lit where da=?", arrayOf(date.text.toString()))
+        val c = db.rawQuery("Select * from Lit where da=? and username=?", arrayOf(date.text.toString(),username))
 
         if (c.count > 0) {
             Toast.makeText(this, "Already exist", Toast.LENGTH_LONG).show()
@@ -72,6 +74,7 @@ class DateShow : AppCompatActivity() {
             cv.put("url", url)
             cv.put("title", tit.text.toString())
             cv.put("picurl", url1.text.toString())
+            cv.put("user",username)
             db.insert("Lit", null, cv)
             startActivity(Intent(this, MainActivity::class.java))
 
@@ -90,9 +93,9 @@ class DateShow : AppCompatActivity() {
         startActivity(i)
     }
 
-    inner class SQL(ctx: Context) : SQLiteOpenHelper(ctx, "Nasa", null, 1) {
+    inner class SQL(ctx: Context) : SQLiteOpenHelper(ctx, "Nasa", null, 2) {
         override fun onCreate(db: SQLiteDatabase?) {
-            db?.execSQL("Create table Lit(_id INTEGER PRIMARY KEY AUTOINCREMENT, da text, explanation text, hdurl text, url text,title text,picurl text) ")
+            db?.execSQL("Create table Lit(_id INTEGER PRIMARY KEY AUTOINCREMENT, da text, explanation text, hdurl text, url text,title text,picurl text,username text) ")
 
         }
 

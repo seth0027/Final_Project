@@ -5,9 +5,16 @@
     <string name="search">search for date</string>
     <string name="clear">Clear all</string>
     <string name="show">Show all</string>
-    <string name="about">"Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date.The user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. "</string>
+    <string name="about">Allows the user to enter a date to retrieve an image from NASA’s web servers. A date picker object that allows the user to pick a given date.The user can save various dates and images to the device for later viewing.The user can also delete images that have been saved to the device. </string>
     <string name="aboutH">About</string>
     <string name="searchType">Type your search on search bar</string>
+    <string name="hintuser">Enter your username</string>
+    <string name="hintpass">Enter your password</string>
+    <string name="log">Login</string>
+    <string name="sign">Sign Up</string>
+    <string name="newuser">Enter new username</string>
+    <string name="pass">Enter new password</string>
+    <string name="passveri">Re Enter password</string>
 
 
 </resources>
