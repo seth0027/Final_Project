@@ -9,13 +9,14 @@
     <string name="show">Mostrar todo</string>
     <string name="about">Permite al usuario ingresar una fecha para recuperar una imagen de los servidores web de la NASA. Un objeto selector de fechas que le permite elegir una fecha determinada. El usuario puede guardar varias fechas e imágenes en el dispositivo para verlas más tarde. El usuario también puede eliminar imágenes que se han guardado en el dispositivo </string>
     <string name="aboutH">Acerca de</string>
-
+    <string name="hintpass">Ingresa tu contraseña</string>
     <string name="searchType">Escribe tu búsqueda en la barra de búsqueda</string>
-    <string name="hintuser">Enter your username</string>
-    <string name="log">Login</string>
-    <string name="sign">Sign Up</string>
-    <string name="newuser">Enter new username</string>
-    <string name="pass">Enter new password</string>
-    <string name="passveri">Re Enter password</string>
+    <string name="hintuser">Ingrese su nombre de usuario
+</string>
+    <string name="log">Iniciar sesión</string>
+    <string name="sign">Regístrate</string>
+    <string name="newuser">Ingrese nuevo nombre de usuario</string>
+    <string name="pass">Ingrese nueva clave</string>
+    <string name="passveri">Escriba la contraseña otra vez</string>
 
 </resources>
