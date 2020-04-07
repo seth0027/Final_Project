@@ -3,6 +3,7 @@ package com.finalpro.myapplication
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,9 @@ class Login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val db=SQL(this).writableDatabase
+        val prefs=getSharedPreferences("login",Context.MODE_PRIVATE)
+        user.setText(prefs.getString("username",""))
+        pass.setText(prefs.getString("password",""))
 
         login.setOnClickListener{
 
@@ -32,6 +36,13 @@ class Login : AppCompatActivity() {
             if(c.count>0){
                 val i= Intent(this,MainActivity::class.java)
                 i.putExtra("username",username.toString())
+
+                val prefs = getSharedPreferences("login", Context.MODE_PRIVATE)
+                val edit=prefs.edit()
+                edit.putString("username",username.toString())
+                edit.putString("password",password.toString())
+                edit.commit()
+
                 startActivity(i)
             }
 
@@ -94,7 +105,7 @@ class Login : AppCompatActivity() {
 
 
 
-    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Log",null,2){
+    inner class SQL(ctx:Context) : SQLiteOpenHelper(ctx,"Log",null,1){
         override fun onCreate(db: SQLiteDatabase?) {
             db?.execSQL("Create table Login(username text PRIMARY KEY , password text) ")
 

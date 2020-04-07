@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
                 val db = DateShow().SQL(this).writableDatabase
                 val name=intent.getStringExtra("username")
-                db.delete("Lit", "_id=$da and username=$name", null)
+                db.delete("Lit", "_id=$da and username='$name'", null)
                 list.removeAt(position)
 
                 my.notifyDataSetChanged()
