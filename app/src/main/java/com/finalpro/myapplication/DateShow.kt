@@ -1,28 +1,33 @@
 package com.finalpro.myapplication
 
+import android.app.WallpaperManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_date__show.*
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
-
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-
 
 
 class DateShow : AppCompatActivity() {
@@ -86,13 +91,53 @@ class DateShow : AppCompatActivity() {
     }
 
 
+    private fun loadWallpaper(url:String) {
+        try {
+
+            Log.d("Image",url)
+//            val url = URL(url)
+//            val image = BitmapFactory.decodeStream(url.openStream())
+
+            val bm: Bitmap = (img.drawable as BitmapDrawable).bitmap
+
+            val manager: WallpaperManager = WallpaperManager.getInstance(applicationContext)
+            manager.setBitmap(bm)
+
+            Toast.makeText(applicationContext, "Wallpaper set successfully", Toast.LENGTH_LONG).show()
+
+        }
+            catch (e: Exception) {
+                Snackbar.make(img,"Some error occured try again ?",Snackbar.LENGTH_LONG).setAction("Try Again"){ loadWallpaper(url)}.show()
+            }
+
+    }
+
+
 
 
     private fun onClick() {
         val url = hdurl.text.toString()
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        startActivity(i)
+
+        Log.d("Image",url)
+
+
+        AlertDialog.Builder(this).setMessage("Do you want to set it as Wallpaper").setTitle("Action ?").setPositiveButton("Yes"){_,_->
+
+
+               loadWallpaper(url)
+
+
+
+
+
+        }.setNeutralButton("Open page"){_,_->
+
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            Log.d("Image",url)
+            startActivity(i)
+        }.setNegativeButton("No"){_,_->}.create().show()
+
     }
 
     inner class SQL(ctx: Context) : SQLiteOpenHelper(ctx, "Nasa", null, 1) {
@@ -174,9 +219,13 @@ class DateShow : AppCompatActivity() {
             date.text = jObj.getString("date")
             explanation.text = jObj.getString("explanation")
             url1.text = jObj.getString("url")
-            hdurl.text = jObj.getString("hdurl")
+            val pic=try{jObj.getString("hdurl")}catch (e:JSONException){jObj.getString("url")}
+            hdurl.text =pic
             tit.text = jObj.getString("title")
-            Picasso.get().load(jObj.getString("url")).resize(960, 720).into(img)
+            Picasso.get().load(pic).into(img)
+
+
+                    //.resize(960, 720)
 
             img.visibility = View.VISIBLE
             save.visibility=View.VISIBLE

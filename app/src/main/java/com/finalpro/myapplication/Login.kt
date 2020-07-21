@@ -93,7 +93,7 @@ class Login : AppCompatActivity() {
 
                     }
                 }
-            }.setNeutralButton("Okay") { _, _ -> }.create().show()
+            }.setNeutralButton("Cancel") { _, _ -> }.create().show()
             }
 
         }
